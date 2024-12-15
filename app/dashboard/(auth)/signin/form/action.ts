@@ -2,9 +2,9 @@
 
 import { redirect } from "next/navigation";
 import { formSchema } from "./validation";
-import prisma from "@/lib/prisma";
 import { lucia } from "@/lib/auth";
 import { cookies } from "next/headers";
+import prisma from "@/lib/prisma";
 const bcrypt = require('bcrypt');
 
 export interface ActionResult {
@@ -13,7 +13,6 @@ export interface ActionResult {
 }
 
 export async function handleSignin(prevState: any, formData: FormData): Promise<ActionResult> {
-    console.log(formData.get('email'));
 
     const values = formSchema.safeParse({
         email: formData.get('email'),
