@@ -36,7 +36,7 @@ export const columns: ColumnDef<Airplane>[] = [
             return (
                 <div className='inline-flex gap-5 items-center'>
                     <Button variant={'secondary'} size='sm' asChild>
-                        <Link href={`/dashboard/airplanes/${plane.id}`}>
+                        <Link href={`/dashboard/airplanes/edit/${plane.id}`}>
                             <Pencil className='mr-2 w-4 h-4' />
                             Edit
                         </Link>

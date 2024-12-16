@@ -4,10 +4,15 @@ import { ActionResult } from '@/app/dashboard/(auth)/signin/form/action';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import React, { useActionState } from 'react'
-import { saveAirplane } from '../lib/actions';
+import React, { FC, useActionState } from 'react'
+import { saveAirplane, updateAirplane } from '../lib/actions';
 import { useFormStatus } from 'react-dom';
+import { Airplane } from '@prisma/client';
 
+interface FormAirplanePageProps {
+    type?: "ADD" | "EDIT",
+    defaultValues?: Airplane | null
+}
 
 const SubmitButton = () => {
     const { pending } = useFormStatus();
@@ -16,13 +21,17 @@ const SubmitButton = () => {
     </>
 }
 
-const FormAirplane = () => {
+const FormAirplane: FC<FormAirplanePageProps> = ({ type, defaultValues }) => {
 
     const initialFormState: ActionResult = {
         errorTitle: null,
         errorDesc: []
     }
-    const [state, formAction] = useActionState(saveAirplane, initialFormState)
+
+    const updateAirplaneById = (_state: ActionResult, formData: FormData) => updateAirplane(initialFormState, defaultValues?.id!, formData);
+
+
+    const [state, formAction] = useActionState(type === 'ADD' ? saveAirplane : updateAirplaneById, initialFormState)
     return (
         <form action={formAction} className='w-[40%] space-y-4'>
 
@@ -37,11 +46,15 @@ const FormAirplane = () => {
 
             <div className='space-y-2'>
                 <Label htmlFor='code'>Airplane Code</Label>
-                <Input id='code' name='code' type='text' placeholder='Airplane Code...' required />
+                <Input id='code' name='code' type='text' placeholder='Airplane Code...' required
+                    defaultValue={defaultValues?.code}
+                />
             </div>
             <div className='space-y-2'>
                 <Label htmlFor='name'>Airplane Name</Label>
-                <Input id='name' name='name' type='text' placeholder='Airplane Name...' required />
+                <Input id='name' name='name' type='text' placeholder='Airplane Name...' required
+                    defaultValue={defaultValues?.name}
+                />
             </div>
             <div className='space-y-2'>
                 <Label htmlFor='name'>Airplane Photo</Label>
