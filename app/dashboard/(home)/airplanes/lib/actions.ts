@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { uploadFile } from "@/lib/supabase";
 import { revalidatePath } from "next/cache";
 import prisma from "@/lib/prisma";
+import { deleteFile } from '../../../../../lib/supabase';
 
 
 export async function getAirplaneById(id: string) {
@@ -132,4 +133,44 @@ export async function updateAirplane(prevState: ActionResult, id: string, formDa
 
     revalidatePath('/dashboard/airplanes');
     redirect('/dashboard/airplanes');
+}
+
+export async function deleteAirplane(id: string): Promise<ActionResult | undefined> {
+    const data = await prisma.airplane.findFirst({
+        where: {
+            id: id
+        }
+    })
+
+    if (!data) {
+        return {
+            errorTitle: "Data not found",
+            errorDesc: []
+        }
+    }
+
+    const deletedFile = await deleteFile(data?.image)
+
+    if (deletedFile instanceof Error) {
+        return {
+            errorTitle: "Faild to Delete File",
+            errorDesc: ["Problem on supabase service. Please try again later"]
+        }
+    }
+
+    try {
+        await prisma.airplane.delete({
+            where: {
+                id: id
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        return {
+            errorTitle: "Failed to Delete Data",
+            errorDesc: ["Problem on database. Please try again later."]
+        }
+    }
+
+    revalidatePath('/dashboard/airplanes')
 }
