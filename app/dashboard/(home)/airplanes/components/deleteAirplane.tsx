@@ -20,7 +20,6 @@ const DeleteAirplane: FC<DeleteAirplanePageProps> = ({ id }) => {
 
     const deleteAirplaneById = deleteAirplane.bind(null, id);
 
-
     return (
         <form action={deleteAirplaneById}>
             <SubmitButton />
