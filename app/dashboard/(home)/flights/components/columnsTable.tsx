@@ -7,6 +7,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Pencil } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import ColumnRouteFlight from "./columnRouteFlight";
+import ColumnSeatPrice from "./columnSeatPrice";
 
 export type FlightColumn = Flight & {
     plane: Airplane,
@@ -35,16 +37,16 @@ export const columns: ColumnDef<FlightColumn>[] = [
         cell: ({ row }) => {
             const flight = row.original;
 
-            return flight.destinationCity
+            return <ColumnRouteFlight flight={flight} />
         }
     },
     {
         accessorKey: 'price',
-        header: "Price",
+        header: "Price / Seat",
         cell: ({ row }) => {
             const flight = row.original;
 
-            return flight.price
+            return <ColumnSeatPrice flight={flight} />
         }
     },
     {
