@@ -86,3 +86,24 @@ export async function updateFlight(prevState: ActionResult, id: string, formData
     revalidatePath('/dashboard/flights')
     redirect('/dashboard/flights');
 }
+
+export async function deleteFlight(id: string) {
+    try {
+        await prisma.flighSeat.deleteMany({
+            where: {
+                flightId: id
+            }
+        })
+
+        await prisma.flight.delete({
+            where: {
+                id: id
+            }
+        })
+    } catch (error) {
+        console.log(error);
+
+    }
+
+    revalidatePath('/dashboard/flights')
+}
