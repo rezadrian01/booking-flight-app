@@ -50,3 +50,39 @@ export async function saveFlight(
     revalidatePath('/dashboard/flights')
     redirect('/dashboard/flights');
 }
+
+export async function updateFlight(prevState: ActionResult, id: string, formData: FormData): Promise<ActionResult> {
+    const departureDate = new Date(formData.get('departureDate') as string);
+    const arrivalDate = new Date(formData.get('arrivalDate') as string);
+
+    const values = formFlightSchema.safeParse({
+        planeId: formData.get('planeId'),
+        price: formData.get('price'),
+        departureCity: formData.get('departureCity'),
+        departureCityCode: formData.get('departureCityCode'),
+        departureDate,
+        destinationCity: formData.get('destinationCity'),
+        destinationCityCode: formData.get('destinationCityCode'),
+        arrivalDate,
+    })
+
+    if (!values.success) {
+        return {
+            errorTitle: "Error Validation",
+            errorDesc: values.error.issues.map(issue => issue.message)
+        }
+    }
+
+    await prisma.flight.update({
+        where: {
+            id: id
+        },
+        data: {
+            ...values.data,
+            price: Number.parseInt(values.data.price)
+        }
+    })
+
+    revalidatePath('/dashboard/flights')
+    redirect('/dashboard/flights');
+}

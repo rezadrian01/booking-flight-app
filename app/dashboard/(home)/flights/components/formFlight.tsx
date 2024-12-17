@@ -12,21 +12,26 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import SubmitFormButton from '../../components/submitFormButton';
-import { Airplane } from '@prisma/client';
+import { Airplane, Flight } from '@prisma/client';
 import { ActionResult } from '@/app/dashboard/(auth)/signin/form/action';
-import { saveFlight } from '../lib/actions';
+import { saveFlight, updateFlight } from '../lib/actions';
+import { dateFormat } from '@/lib/utils';
 
 interface FormFlightProps {
     airplanes: Airplane[],
-
+    type?: "ADD" | "EDIT",
+    defaultValues?: Flight | null
 }
 
-const FormFlight: FC<FormFlightProps> = ({ airplanes }) => {
+const FormFlight: FC<FormFlightProps> = ({ airplanes, defaultValues, type }) => {
     const initialState: ActionResult = {
         errorTitle: null,
         errorDesc: []
     }
-    const [state, formAction] = useActionState(saveFlight, initialState);
+
+    const updateFlightById = (_state: ActionResult, formData: FormData) => updateFlight(initialState, defaultValues?.id, formData);
+
+    const [state, formAction] = useActionState(type === 'ADD' ? saveFlight : updateFlightById, initialState);
     return (
         <form action={formAction} className='space-y-6'>
 
@@ -42,7 +47,7 @@ const FormFlight: FC<FormFlightProps> = ({ airplanes }) => {
             <div className='grid grid-cols-2 gap-4'>
                 <div className='space-y-2'>
                     <Label htmlFor='planeId'>Choose Airplane</Label>
-                    <Select name='planeId'>
+                    <Select name='planeId' defaultValue={defaultValues?.planeId}>
                         <SelectTrigger id='planeId' >
                             <SelectValue placeholder="Choose Airplane" />
                         </SelectTrigger>
@@ -63,6 +68,7 @@ const FormFlight: FC<FormFlightProps> = ({ airplanes }) => {
                         type='number'
                         min={0}
                         placeholder='Flight Price...'
+                        defaultValue={defaultValues?.price}
                         required
                     />
                     <span className='text-xs text-gray-900'>
@@ -74,6 +80,7 @@ const FormFlight: FC<FormFlightProps> = ({ airplanes }) => {
                 <div className='space-y-2'>
                     <Label htmlFor='departureCity'>Departure City</Label>
                     <Input
+                        defaultValue={defaultValues?.departureCity}
                         id='departureCity'
                         name='departureCity'
                         type='text'
@@ -84,6 +91,7 @@ const FormFlight: FC<FormFlightProps> = ({ airplanes }) => {
                 <div className='space-y-2'>
                     <Label htmlFor='departureCityCode'>City Code</Label>
                     <Input
+                        defaultValue={defaultValues?.departureCityCode}
                         id='departureCityCode'
                         name='departureCityCode'
                         type='text'
@@ -94,6 +102,7 @@ const FormFlight: FC<FormFlightProps> = ({ airplanes }) => {
                 <div className='space-y-2'>
                     <Label htmlFor='departureDate'>Departure Date</Label>
                     <Input
+                        defaultValue={dateFormat(defaultValues?.departureDate, 'YYYY-MM-DDTHH:MM')}
                         id='departureDate'
                         name='departureDate'
                         type='datetime-local'
@@ -107,6 +116,7 @@ const FormFlight: FC<FormFlightProps> = ({ airplanes }) => {
                 <div className='space-y-2'>
                     <Label htmlFor='destinationCity'>Destination City</Label>
                     <Input
+                        defaultValue={defaultValues?.destinationCity}
                         id='destinationCity'
                         name='destinationCity'
                         type='text'
@@ -117,6 +127,7 @@ const FormFlight: FC<FormFlightProps> = ({ airplanes }) => {
                 <div className='space-y-2'>
                     <Label htmlFor='destinationCityCode'>City Code</Label>
                     <Input
+                        defaultValue={defaultValues?.destinationCityCode}
                         id='destinationCityCode'
                         name='destinationCityCode'
                         type='text'
@@ -127,6 +138,7 @@ const FormFlight: FC<FormFlightProps> = ({ airplanes }) => {
                 <div className='space-y-2'>
                     <Label htmlFor='arrivalDate'>Arrival Date</Label>
                     <Input
+                        defaultValue={dateFormat(defaultValues?.arrivalDate, 'YYYY-MM-DDTHH:MM')}
                         id='arrivalDate'
                         name='arrivalDate'
                         type='datetime-local'
