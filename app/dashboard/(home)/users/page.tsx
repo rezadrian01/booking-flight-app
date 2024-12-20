@@ -4,20 +4,20 @@ import { Plus } from 'lucide-react'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import React, { FC } from 'react'
-import { columns } from './components/columnTicket'
-import { getTickets } from './lib/data'
+import { columns } from './components/columnUser'
+import { getCustomers } from './lib/data'
 
 export const metadata: Metadata = {
-    title: "Dashboard | Tickets"
+    title: "Dashboard | Users"
 }
 
-const TicketPage: FC = async () => {
-    const tickets = await getTickets();
+const UserPage: FC = async () => {
+    const users = await getCustomers();
 
     return (
         <>
             <div className='flex flex-row items-center justify-between'>
-                <div className='my-5 text-2xl font-bold'>Tickets</div>
+                <div className='my-5 text-2xl font-bold'>Users</div>
                 <Button asChild>
                     <Link href='/dashboard/flights/create'>
                         <Plus className='mr-2 h-4 w-4' />
@@ -25,9 +25,9 @@ const TicketPage: FC = async () => {
                     </Link>
                 </Button>
             </div>
-            <DataTable columns={columns} data={tickets} />
+            <DataTable columns={columns} data={users} />
         </>
     )
 }
 
-export default TicketPage
+export default UserPage
