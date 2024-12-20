@@ -29,7 +29,7 @@ const FormFlight: FC<FormFlightProps> = ({ airplanes, defaultValues, type }) => 
         errorDesc: []
     }
 
-    const updateFlightById = (_state: ActionResult, formData: FormData) => updateFlight(initialState, defaultValues?.id, formData);
+    const updateFlightById = (_state: ActionResult, formData: FormData) => updateFlight(initialState, defaultValues?.id!, formData);
 
     const [state, formAction] = useActionState(type === 'ADD' ? saveFlight : updateFlightById, initialState);
     return (
